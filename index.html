@@ -1,24 +1,35 @@
-<script type="module">
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-  import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.module.js';
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MindAR Test</title>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const mindarThree = new window.MINDAR.MindARThree({
+          container: document.body,
+          imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
+        });
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    const mindarThree = new MindARThree({
-      container: document.body,
-      imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
-    });
+        const { renderer, scene, camera } = mindarThree;
 
-    const { renderer, scene, camera } = mindarThree;
+        const anchor = mindarThree.addAnchor(0);
+        anchor.group.add(new window.MINDAR.THREE.Mesh(
+          new window.MINDAR.THREE.PlaneGeometry(1, 1),
+          new window.MINDAR.THREE.MeshBasicMaterial({ color: 0x00ffff })
+        ));
 
-    const anchor = mindarThree.addAnchor(0);
-    anchor.group.add(new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1),
-      new THREE.MeshBasicMaterial({ color: 0x00ffff })
-    ));
-
-    await mindarThree.start();
-    renderer.setAnimationLoop(() => {
-      renderer.render(scene, camera);
-    });
-  });
-</script>
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
+      });
+    </script>
+  </body>
+</html>
