@@ -10,9 +10,24 @@
     <style>
       body { margin: 0; overflow: hidden; }
       #ar-scene { width: 100vw; height: 100vh; }
+      #startButton {
+        position: absolute;
+        z-index: 999;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #000;
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 20px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
+    <div id="startButton">▶ 音を再生してARを開始</div>
+
     <a-scene
       id="ar-scene"
       mindar-image="imageTargetSrc: ./targets.mind;"
@@ -30,8 +45,16 @@
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-box position="0 0.1 0" material="color: red;"></a-box>
-        <a-sound src="#audio" autoplay="true"></a-sound>
+        <a-sound id="sound" src="#audio" autoplay="false"></a-sound>
       </a-entity>
     </a-scene>
+
+    <script>
+      document.getElementById("startButton").addEventListener("click", () => {
+        const soundEl = document.querySelector("#sound");
+        soundEl.components.sound.playSound();
+        document.getElementById("startButton").style.display = "none";
+      });
+    </script>
   </body>
 </html>
