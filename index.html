@@ -1,65 +1,38 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MindAR Example</title>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.125.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.5/dist/mindar-image-three.prod.js"></script>
-  <style>
-    body {
-      margin: 0; padding: 0; overflow: hidden; background-color: #000;
-    }
-    #ar-button {
-      position: absolute;
-      bottom: 5%;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 1rem 2rem;
-      color: white;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 1rem;
-      cursor: pointer;
-      font-size: 1.1rem;
-      z-index: 10;
-    }
-    a-scene {
-      width: 100vw;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-    }
-  </style>
-</head>
-<body>
-  <button id="ar-button">ARをスタート</button>
+<html>
+  <head>
+    <title>MindAR Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+      import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.module.js';
 
-  <script>
-    document.getElementById("ar-button").addEventListener("click", async () => {
-      const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-        container: document.body,
-        imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind",
+      document.addEventListener("DOMContentLoaded", async () => {
+        const mindarThree = new MindARThree({
+          container: document.body,
+          imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
+        });
+
+        const { renderer, scene, camera } = mindarThree;
+
+        const anchor = mindarThree.addAnchor(0);
+        anchor.group.add(new THREE.Mesh(
+          new THREE.PlaneGeometry(1, 1),
+          new THREE.MeshBasicMaterial({ color: 0x00ffff })
+        ));
+
+        await mindarThree.start();
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
       });
-
-      const { renderer, scene, camera } = mindarThree;
-
-      const geometry = new THREE.PlaneGeometry(1, 1);
-      const material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.5 });
-      const plane = new THREE.Mesh(geometry, material);
-
-      const anchor = mindarThree.addAnchor(0);
-      anchor.group.add(plane);
-
-      await mindarThree.start();
-
-      renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-      });
-
-      document.getElementById("ar-button").style.display = "none";
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
