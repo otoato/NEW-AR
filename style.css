@@ -1,16 +1,24 @@
 body, html {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   height: 100%;
   width: 100%;
   background-color: #111;
   color: #eee;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-#ar-container {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
+#start-button {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
