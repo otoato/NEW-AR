@@ -9,9 +9,9 @@
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
       width: 100vw;
       height: 100vh;
+      overflow: hidden;
     }
     a-scene {
       width: 100vw;
@@ -19,8 +19,6 @@
       position: fixed;
       top: 0;
       left: 0;
-      margin: 0;
-      padding: 0;
     }
     audio {
       display: none;
@@ -36,9 +34,9 @@
   <a-scene mindar-image="imageTargetSrc: ./mind/targets.mind;" embedded vr-mode-ui="enabled: false">
     <a-assets></a-assets>
 
-    <!-- 画像ターゲットの設定 -->
+    <!-- 画像ターゲット -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-plane color="#FFF" height="1" width="1"></a-plane>
+      <a-plane height="1" width="1" material="opacity: 0; transparent: true;"></a-plane>
     </a-entity>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -47,6 +45,7 @@
   <script>
     const apiKey = "04c722650b61e51900cb5ec33d041f16";
 
+    // 天気情報を取得し、分類
     async function getWeather() {
       return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -63,11 +62,22 @@
             }
             const data = await res.json();
             const mainWeather = data.weather[0].main.toLowerCase();
+            console.log("取得した天気:", mainWeather);
 
             let weather;
-            if (mainWeather.includes("rain")) weather = "rainy";
-            else if (mainWeather.includes("cloud")) weather = "cloudy";
-            else weather = "sunny";
+            switch (mainWeather) {
+              case "rain":
+                weather = "rainy";
+                break;
+              case "clouds":
+                weather = "cloudy";
+                break;
+              case "clear":
+                weather = "sunny";
+                break;
+              default:
+                weather = "sunny"; // 他（例: mist, drizzle）は晴れ扱い
+            }
 
             resolve(weather);
           } catch (e) {
@@ -79,14 +89,16 @@
       });
     }
 
+    // メイン処理
     (async () => {
-      const now = new Date();
-      const hour = now.getHours();
+      // 時間帯判定
+      const hour = new Date().getHours();
       let time;
       if (hour < 10) time = "morning";
       else if (hour < 18) time = "afternoon";
       else time = "night";
 
+      // 天気判定
       let weather;
       try {
         weather = await getWeather();
@@ -95,14 +107,18 @@
         weather = "sunny";
       }
 
+      // 音声ファイル設定
       const audio = document.getElementById("env-audio");
-      audio.src = `./audio/${time}-${weather}.mp3`;
+      const filePath = `./audio/${time}-${weather}.mp3`;
+      console.log("再生ファイル:", filePath);
+      audio.src = filePath;
       audio.load();
 
+      // ARターゲットに応じた再生制御
       const target = document.querySelector("[mindar-image-target]");
       target.addEventListener("targetFound", () => {
         console.log("ターゲット発見！音再生");
-        audio.play().catch(e => console.error("audio再生エラー:", e));
+        audio.play().catch(e => console.error("音再生エラー:", e));
       });
       target.addEventListener("targetLost", () => {
         console.log("ターゲット消失。音停止");
@@ -111,5 +127,6 @@
       });
     })();
   </script>
+
 </body>
 </html>
