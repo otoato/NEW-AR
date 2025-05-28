@@ -1,24 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const button = document.getElementById("ar-button");
+mindar-image-three.prod.js:2 WARNING: Multiple instances of Three.js being imported.
+2212	@	mindar-image-three.prod.js:2
+n	@	mindar-image-three.prod.js:2
+(anonymous)	@	mindar-image-three.prod.js:2
+(anonymous)	@	mindar-image-three.prod.js:2
+(anonymous)	@	mindar-image-three.prod.js:2
+script.js:1 Uncaught SyntaxError: Invalid or unexpected token (at script.js:1:1)
 
-  button.addEventListener("click", async () => {
-    const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-      container: document.body,
-      imageTargetSrc: "./mind/targets.mind",
-    });
-
-    const { renderer, scene, camera } = mindarThree;
-
-    const anchor = mindarThree.addAnchor(0);
-    const plane = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1),
-      new THREE.MeshBasicMaterial({ color: 0xffcc00 })
-    );
-    anchor.group.add(plane);
-
-    await mindarThree.start();
-    renderer.setAnimationLoop(() => {
-      renderer.render(scene, camera);
-    });
-  });
-});
+﻿
