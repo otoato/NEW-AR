@@ -2,20 +2,18 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>MindAR Module Example</title>
+  <title>MindAR Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
   </style>
-  <link rel="icon" href="data:,">
 </head>
 <body>
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-    import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.module.js';
-
+  <script>
     document.addEventListener("DOMContentLoaded", async () => {
-      const mindarThree = new MindARThree({
+      const mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.body,
         imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
       });
@@ -23,12 +21,13 @@
       const { renderer, scene, camera } = mindarThree;
 
       const anchor = mindarThree.addAnchor(0);
-      anchor.group.add(new THREE.Mesh(
-        new THREE.PlaneGeometry(1, 1),
-        new THREE.MeshBasicMaterial({ color: 0x00ffff })
-      ));
+      const geometry = new THREE.PlaneGeometry(1, 1);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+      const mesh = new THREE.Mesh(geometry, material);
+      anchor.group.add(mesh);
 
       await mindarThree.start();
+
       renderer.setAnimationLoop(() => {
         renderer.render(scene, camera);
       });
