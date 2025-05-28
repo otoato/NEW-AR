@@ -3,22 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <title>AR Example</title>
-    <!-- A-Frame 最新安定版 -->
-    <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.0/dist/aframe.min.js"></script>
-    <!-- MindAR 1.1.4 -->
+    <base href="/NEW-AR/" />
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.css" />
     <style>
       body { margin: 0; overflow: hidden; }
       #ar-scene { width: 100vw; height: 100vh; }
     </style>
-    <!-- ベースURL指定：GitHub Pagesのリポジトリ名に合わせる -->
-    <base href="/NEW-AR/">
   </head>
   <body>
     <a-scene
       id="ar-scene"
-      mindar-image="imageTargetSrc: ./mind/targets.mind;"
+      mindar-image="imageTargetSrc: mind/targets.mind;"
       embedded
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
@@ -26,8 +23,7 @@
       device-orientation-permission-ui="enabled: true"
     >
       <a-assets>
-        <!-- 音声ファイルは絶対URLでもOK -->
-        <a-asset-item id="audio" src="https://otoato.github.io/NEW-AR/audio/sample.mp3"></a-asset-item>
+        <a-asset-item id="audio" src="audio/sample.mp3"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
