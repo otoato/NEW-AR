@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
   <head>
     <meta charset="UTF-8" />
+    <base href="/NEW-AR/">
     <title>AR Example</title>
-    <base href="/NEW-AR/" />
     <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.css" />
@@ -15,7 +15,7 @@
   <body>
     <a-scene
       id="ar-scene"
-      mindar-image="imageTargetSrc: mind/targets.mind;"
+      mindar-image="imageTargetSrc: ./targets.mind;"
       embedded
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
@@ -23,7 +23,7 @@
       device-orientation-permission-ui="enabled: true"
     >
       <a-assets>
-        <a-asset-item id="audio" src="audio/sample.mp3"></a-asset-item>
+        <a-asset-item id="audio" src="./audio/sample.mp3"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
