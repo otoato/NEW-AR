@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>MindAR Test</title>
+    <title>MindAR 実験</title>
     <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
     <style>
@@ -13,12 +12,7 @@
   <body>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
-        if (!window.MINDAR || !window.MINDAR.MindARThree) {
-          alert("MindARが正しく読み込まれていません。");
-          return;
-        }
-
-        const mindarThree = new window.MINDAR.MindARThree({
+        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
           container: document.body,
           imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
         });
@@ -26,9 +20,9 @@
         const { renderer, scene, camera } = mindarThree;
 
         const anchor = mindarThree.addAnchor(0);
-        anchor.group.add(new window.MINDAR.THREE.Mesh(
-          new window.MINDAR.THREE.PlaneGeometry(1, 1),
-          new window.MINDAR.THREE.MeshBasicMaterial({ color: 0x00ffff })
+        anchor.group.add(new THREE.Mesh(
+          new THREE.PlaneGeometry(1, 1),
+          new THREE.MeshBasicMaterial({ color: 0x00ffff })
         ));
 
         await mindarThree.start();
