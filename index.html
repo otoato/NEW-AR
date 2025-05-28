@@ -67,17 +67,18 @@
 
         const weather = await getWeather();
         const audio = document.getElementById("env-audio");
-        const src = `./sound/${time}-${weather}.mp3`; // 例: morning-rainy.mp3
+        const src = `./sound/${time}-${weather}.mp3`;
         audio.src = src;
 
-        const scene = document.querySelector("a-scene");
+        const target = document.querySelector("[mindar-image-target]");
 
-        scene.addEventListener("targetFound", () => {
+        target.addEventListener("targetFound", () => {
           audio.play();
         });
 
-        scene.addEventListener("targetLost", () => {
+        target.addEventListener("targetLost", () => {
           audio.pause();
+          audio.currentTime = 0; // 再生位置リセットもおすすめ
         });
       })();
     </script>
