@@ -4,13 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MindAR Sample</title>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.125.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body, html {
+      margin: 0; padding: 0; overflow: hidden; background: black;
+      font-family: sans-serif; color: white;
+    }
+    #ar-button {
+      position: absolute;
+      bottom: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 1rem 2rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
 </head>
 <body>
-  <button id="ar-button">ARをスタート</button>
 
-  <script src="script.js"></script>
+<button id="ar-button">ARをスタート</button>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.125.1/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+
+<script>
+  document.getElementById("ar-button").addEventListener("click", async () => {
+    const mindarThree = new window.MINDAR.IMAGE.MindARThree({
+      container: document.body,
+      imageTargetSrc: "./mind/targets.mind"  // ここは実際のパスにしてください
+    });
+    const { renderer, scene, camera } = mindarThree;
+
+    // 立方体を表示する簡単な例
+    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const material = new THREE.MeshNormalMaterial();
+    const cube = new THREE.Mesh(geometry, material);
+
+    const anchor = mindarThree.addAnchor(0);
+    anchor.group.add(cube);
+
+    await mindarThree.start();
+
+    renderer.setAnimationLoop(() => {
+      renderer.render(scene, camera);
+      cube.rotation.y += 0.01;
+    });
+
+    document.getElementById("ar-button").style.display = "none";
+  });
+</script>
+
 </body>
 </html>
