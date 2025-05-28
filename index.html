@@ -1,33 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <base href="/NEW-AR/">
-    <title>AR Example</title>
+    <base href="./" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather-Responsive AR</title>
+    
+    <!-- A-Frame & MindAR -->
     <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.css" />
+
+    <!-- カスタムスクリプト -->
+    <script src="./script.js" defer></script>
+
     <style>
       body { margin: 0; overflow: hidden; }
       #ar-scene { width: 100vw; height: 100vh; }
-      #startButton {
-        position: absolute;
-        z-index: 999;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #000;
-        color: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 20px;
-        cursor: pointer;
-      }
     </style>
   </head>
   <body>
-    <div id="startButton">▶ 音を再生してARを開始</div>
-
     <a-scene
       id="ar-scene"
       mindar-image="imageTargetSrc: ./targets.mind;"
@@ -38,23 +30,16 @@
       device-orientation-permission-ui="enabled: true"
     >
       <a-assets>
-        <a-asset-item id="audio" src="./audio/sample.mp3"></a-asset-item>
+        <!-- 必要な音素材が ./audio に入っていること -->
+        <img id="placeholder" src="./placeholder.jpg" />
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-box position="0 0.1 0" material="color: red;"></a-box>
-        <a-sound id="sound" src="#audio" autoplay="false"></a-sound>
+        <!-- 簡単なビジュアル要素 -->
+        <a-plane src="#placeholder" height="0.7" width="1" position="0 0 0"></a-plane>
       </a-entity>
     </a-scene>
-
-    <script>
-      document.getElementById("startButton").addEventListener("click", () => {
-        const soundEl = document.querySelector("#sound");
-        soundEl.components.sound.playSound();
-        document.getElementById("startButton").style.display = "none";
-      });
-    </script>
   </body>
 </html>
