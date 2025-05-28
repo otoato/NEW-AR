@@ -6,7 +6,6 @@
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <style>
-    /* 画面全体にa-sceneを広げるための必須設定 */
     html, body {
       margin: 0;
       padding: 0;
@@ -18,7 +17,8 @@
       width: 100vw;
       height: 100vh;
       position: fixed;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       margin: 0;
       padding: 0;
     }
@@ -33,7 +33,7 @@
   <audio id="env-audio" controls></audio>
 
   <!-- MindARのシーン -->
-  <a-scene mindar-image="imageTargetSrc: ./targets.mind;" embedded>
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind;" embedded vr-mode-ui="enabled: false">
     <a-assets></a-assets>
 
     <!-- 画像ターゲットの設定 -->
@@ -47,7 +47,6 @@
   <script>
     const apiKey = "04c722650b61e51900cb5ec33d041f16";
 
-    // 天気をOpenWeatherMap APIから取得
     async function getWeather() {
       return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -81,7 +80,6 @@
     }
 
     (async () => {
-      // 時間帯判定
       const now = new Date();
       const hour = now.getHours();
       let time;
@@ -94,23 +92,18 @@
         weather = await getWeather();
       } catch (e) {
         console.error("天気情報取得失敗:", e);
-        weather = "sunny"; // デフォルト値
+        weather = "sunny";
       }
 
       const audio = document.getElementById("env-audio");
       audio.src = `./audio/${time}-${weather}.mp3`;
       audio.load();
 
-      // MindARターゲット取得
       const target = document.querySelector("[mindar-image-target]");
-
-      // ターゲット検出時に音再生
       target.addEventListener("targetFound", () => {
         console.log("ターゲット発見！音再生");
         audio.play().catch(e => console.error("audio再生エラー:", e));
       });
-
-      // ターゲット消失時に音停止＆リセット
       target.addEventListener("targetLost", () => {
         console.log("ターゲット消失。音停止");
         audio.pause();
