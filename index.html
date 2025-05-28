@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <meta charset="UTF-8">
-    <title>MindARテスト</title>
+    <meta charset="UTF-8" />
+    <title>MindAR WebAR</title>
     <style>
       html, body {
         margin: 0;
@@ -12,10 +12,9 @@
         width: 100%;
       }
       #ar-container {
-        position: absolute;
         width: 100%;
         height: 100%;
-        z-index: 1;
+        position: relative;
       }
     </style>
   </head>
@@ -23,13 +22,14 @@
     <div id="ar-container"></div>
 
     <script type="module">
-      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-      import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.module.js';
+      import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+      import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
 
-      document.addEventListener("DOMContentLoaded", async () => {
+      const start = async () => {
         const mindarThree = new MindARThree({
           container: document.querySelector("#ar-container"),
-          imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
+          imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind", // ← ここはあなたの .mind ファイル
+          maxTrack: 1
         });
 
         const { renderer, scene, camera } = mindarThree;
@@ -44,7 +44,9 @@
         renderer.setAnimationLoop(() => {
           renderer.render(scene, camera);
         });
-      });
+      };
+
+      start();
     </script>
   </body>
 </html>
