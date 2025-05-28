@@ -1,48 +1,55 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <title>MindAR Example</title>
-  <style>
-    html, body {
-      margin: 0; padding: 0; overflow: hidden; width: 100%; height: 100%;
-    }
-    #ar-container {
-      width: 100%; height: 100%;
-      position: fixed;
-      top: 0; left: 0;
-    }
-  </style>
-</head>
-<body>
-  <div id="ar-container"></div>
+<html>
+  <head>
+    <title>Image Tracking Sound Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  </head>
+  <body>
+    <audio id="env-audio" src="" preload="auto"></audio>
 
-  <!-- Three.js (ES module版ではなくUMD版) -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: true;" 
+             vr-mode-ui="enabled: false" 
+             device-orientation-permission-ui="enabled: true" 
+             embedded>
+      <a-assets>
+        <!-- 画像が認識されたときに表示される3D要素のプレースホルダ -->
+        <a-asset-item id="placeholder" src="#"></a-asset-item>
+      </a-assets>
 
-  <!-- MindAR UMD版 -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const mindarThree = new window.MINDAR.MindARThree({
-        container: document.querySelector("#ar-container"),
-        imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-plane color="#FFF" height="1" width="1" position="0 0 0"></a-plane>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // 現在時刻と天気（仮で "morning" と "sunny" を固定）
+      const timeOfDay = "morning"; // "morning" | "afternoon" | "night"
+      const weather = "sunny";     // "sunny" | "cloudy" | "rainy"
+
+      const audio = document.getElementById("env-audio");
+
+      const getAudioPath = (time, weather) => {
+        return `sound/${time}-${weather}.mp3`;
+      };
+
+      // ARの準備ができたらイベントを登録
+      document.addEventListener("DOMContentLoaded", () => {
+        const sceneEl = document.querySelector("a-scene");
+        const mindarComponent = sceneEl.components["mindar-image"];
+
+        sceneEl.addEventListener("targetFound", () => {
+          const src = getAudioPath(timeOfDay, weather);
+          audio.src = src;
+          audio.play();
+        });
+
+        sceneEl.addEventListener("targetLost", () => {
+          audio.pause();
+        });
       });
-
-      const { renderer, scene, camera } = mindarThree;
-
-      const anchor = mindarThree.addAnchor(0);
-      anchor.group.add(new THREE.Mesh(
-        new THREE.PlaneGeometry(1, 1),
-        new THREE.MeshBasicMaterial({ color: 0x00ffff })
-      ));
-
-      await mindarThree.start();
-      renderer.setAnimationLoop(() => {
-        renderer.render(scene, camera);
-      });
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
