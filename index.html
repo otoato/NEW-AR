@@ -1,19 +1,12 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
   <head>
     <meta charset="UTF-8" />
-    <base href="./" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Weather-Responsive AR</title>
-    
-    <!-- A-Frame & MindAR -->
+    <base href="/NEW-AR/">
+    <title>AR Example</title>
     <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.css" />
-
-    <!-- カスタムスクリプト -->
-    <script src="./script.js" defer></script>
-
     <style>
       body { margin: 0; overflow: hidden; }
       #ar-scene { width: 100vw; height: 100vh; }
@@ -30,15 +23,14 @@
       device-orientation-permission-ui="enabled: true"
     >
       <a-assets>
-        <!-- 必要な音素材が ./audio に入っていること -->
-        <img id="placeholder" src="./placeholder.jpg" />
+        <a-asset-item id="audio" src="./audio/sample.mp3"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- 簡単なビジュアル要素 -->
-        <a-plane src="#placeholder" height="0.7" width="1" position="0 0 0"></a-plane>
+        <a-box position="0 0.1 0" material="color: red;"></a-box>
+        <a-sound src="#audio" autoplay="true"></a-sound>
       </a-entity>
     </a-scene>
   </body>
