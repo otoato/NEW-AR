@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>MindAR Test</title>
-    <meta charset="UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
     <style>
       body { margin: 0; overflow: hidden; }
@@ -12,6 +13,11 @@
   <body>
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
+        if (!window.MINDAR || !window.MINDAR.MindARThree) {
+          alert("MindARが正しく読み込まれていません。");
+          return;
+        }
+
         const mindarThree = new window.MINDAR.MindARThree({
           container: document.body,
           imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
