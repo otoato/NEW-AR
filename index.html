@@ -3,43 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AR Example</title>
-  <link rel="stylesheet" href="./style.css" />
+  <title>MindAR Sample</title>
   <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image.prod.js"></script>
+  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="ar-container">
-    <a-scene
-      mindar-image="imageTargetSrc: ./mind/targets.mind;"
-      embedded
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: true"
-    >
-      <a-assets>
-        <!-- 音源 -->
-        <a-asset-item id="audioRain" src="./audio/rain.mp3"></a-asset-item>
-        <a-asset-item id="audioWind" src="./audio/wind.mp3"></a-asset-item>
-        <a-asset-item id="audioClear" src="./audio/clear.mp3"></a-asset-item>
+  <button id="start-button">ARをスタート</button>
 
-        <!-- 画像やモデルもここで読み込めます -->
-        <img id="exampleImage" src="./assets/images/example.png" />
-        <a-asset-item id="avatarModel" src="./assets/models/avatar.gltf"></a-asset-item>
-      </a-assets>
+  <a-scene
+    mindar-image="imageTargetSrc: ./mind/targets.mind; autoStart: false;"
+    embedded
+    color-space="sRGB"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+  >
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-box position="0 0.1 0" material="color: red;"></a-box>
-        <!-- モデル表示例 -->
-        <!-- <a-gltf-model src="#avatarModel" scale="0.01 0.01 0.01" position="0 0 0"></a-gltf-model> -->
-      </a-entity>
-    </a-scene>
-  </div>
-
-  <script src="./script.js"></script>
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-box position="0 0.5 0" material="color: red;" scale="0.5 0.5 0.5"></a-box>
+    </a-entity>
+  </a-scene>
 </body>
 </html>
