@@ -1,55 +1,85 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Image Tracking Sound Demo</title>
-    <script src="https://cdn.jsdelivr.net/npm/aframe@1.2.0/dist/aframe.min.js"></script>
+    <meta charset="utf-8" />
+    <title>天気×時間で音を変えるAR</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      audio { display: none; }
+    </style>
   </head>
   <body>
-    <audio id="env-audio" src="" preload="auto"></audio>
+    <audio id="env-audio" controls></audio>
 
-    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: true;" 
-             vr-mode-ui="enabled: false" 
-             device-orientation-permission-ui="enabled: true" 
-             embedded>
-      <a-assets>
-        <!-- 画像が認識されたときに表示される3D要素のプレースホルダ -->
-        <a-asset-item id="placeholder" src="#"></a-asset-item>
-      </a-assets>
-
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" embedded>
+      <a-assets></a-assets>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane color="#FFF" height="1" width="1" position="0 0 0"></a-plane>
+        <a-plane color="#FFF" height="1" width="1"></a-plane>
       </a-entity>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
     </a-scene>
 
     <script>
-      // 現在時刻と天気（仮で "morning" と "sunny" を固定）
-      const timeOfDay = "morning"; // "morning" | "afternoon" | "night"
-      const weather = "sunny";     // "sunny" | "cloudy" | "rainy"
+      const apiKey = "04c722650b61e51900cb5ec33d041f16";
 
-      const audio = document.getElementById("env-audio");
+      const getWeather = async () => {
+        return new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
 
-      const getAudioPath = (time, weather) => {
-        return `sound/${time}-${weather}.mp3`;
+            const response = await fetch(
+              `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+            );
+            const data = await response.json();
+            const mainWeather = data.weather[0].main.toLowerCase();
+
+            let weather;
+            if (mainWeather.includes("rain")) {
+              weather = "rainy";
+            } else if (mainWeather.includes("cloud")) {
+              weather = "cloudy";
+            } else {
+              weather = "sunny";
+            }
+
+            resolve(weather);
+          }, reject);
+        });
       };
 
-      // ARの準備ができたらイベントを登録
-      document.addEventListener("DOMContentLoaded", () => {
-        const sceneEl = document.querySelector("a-scene");
-        const mindarComponent = sceneEl.components["mindar-image"];
+      (async () => {
+        const now = new Date();
+        const hour = now.getHours();
 
-        sceneEl.addEventListener("targetFound", () => {
-          const src = getAudioPath(timeOfDay, weather);
-          audio.src = src;
+        let time;
+        if (hour < 10) {
+          time = "morning";
+        } else if (hour < 18) {
+          time = "afternoon";
+        } else {
+          time = "night";
+        }
+
+        const weather = await getWeather();
+        const audio = document.getElementById("env-audio");
+        const src = `./sound/${time}-${weather}.mp3`; // 例: morning-rainy.mp3
+        audio.src = src;
+
+        const scene = document.querySelector("a-scene");
+
+        scene.addEventListener("targetFound", () => {
           audio.play();
         });
 
-        sceneEl.addEventListener("targetLost", () => {
+        scene.addEventListener("targetLost", () => {
           audio.pause();
         });
-      });
+      })();
     </script>
   </body>
 </html>
