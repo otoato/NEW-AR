@@ -1,86 +1,122 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>天気×時間で音を変えるAR</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    <style>
-      body { margin: 0; overflow: hidden; }
-      audio { display: none; }
-    </style>
-  </head>
-  <body>
-    <audio id="env-audio" controls></audio>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>天気×時間で音を変えるAR</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    /* 画面全体にa-sceneを広げるための必須設定 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    a-scene {
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
+      top: 0; left: 0;
+      margin: 0;
+      padding: 0;
+    }
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
 
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" embedded>
-      <a-assets></a-assets>
+  <!-- 音声プレイヤー -->
+  <audio id="env-audio" controls></audio>
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane color="#FFF" height="1" width="1"></a-plane>
-      </a-entity>
+  <!-- MindARのシーン -->
+  <a-scene mindar-image="imageTargetSrc: ./targets.mind;" embedded>
+    <a-assets></a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-    </a-scene>
+    <!-- 画像ターゲットの設定 -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-plane color="#FFF" height="1" width="1"></a-plane>
+    </a-entity>
 
-    <script>
-      const apiKey = "04c722650b61e51900cb5ec33d041f16";
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  </a-scene>
 
-      const getWeather = async () => {
-        return new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(async (position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
+  <script>
+    const apiKey = "04c722650b61e51900cb5ec33d041f16";
 
-            const response = await fetch(
+    // 天気をOpenWeatherMap APIから取得
+    async function getWeather() {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+
+          try {
+            const res = await fetch(
               `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
             );
-            const data = await response.json();
+            if (!res.ok) {
+              reject("Weather API error: " + res.status);
+              return;
+            }
+            const data = await res.json();
             const mainWeather = data.weather[0].main.toLowerCase();
 
             let weather;
-            if (mainWeather.includes("rain")) {
-              weather = "rainy";
-            } else if (mainWeather.includes("cloud")) {
-              weather = "cloudy";
-            } else {
-              weather = "sunny";
-            }
+            if (mainWeather.includes("rain")) weather = "rainy";
+            else if (mainWeather.includes("cloud")) weather = "cloudy";
+            else weather = "sunny";
 
             resolve(weather);
-          }, reject);
+          } catch (e) {
+            reject(e);
+          }
+        }, (err) => {
+          reject(err);
         });
-      };
+      });
+    }
 
-      (async () => {
-        const now = new Date();
-        const hour = now.getHours();
+    (async () => {
+      // 時間帯判定
+      const now = new Date();
+      const hour = now.getHours();
+      let time;
+      if (hour < 10) time = "morning";
+      else if (hour < 18) time = "afternoon";
+      else time = "night";
 
-        let time;
-        if (hour < 10) {
-          time = "morning";
-        } else if (hour < 18) {
-          time = "afternoon";
-        } else {
-          time = "night";
-        }
+      let weather;
+      try {
+        weather = await getWeather();
+      } catch (e) {
+        console.error("天気情報取得失敗:", e);
+        weather = "sunny"; // デフォルト値
+      }
 
-        const weather = await getWeather();
-        const audio = document.getElementById("env-audio");
-        const src = `./sound/${time}-${weather}.mp3`;
-        audio.src = src;
+      const audio = document.getElementById("env-audio");
+      audio.src = `./audio/${time}-${weather}.mp3`;
+      audio.load();
 
-        const target = document.querySelector("[mindar-image-target]");
+      // MindARターゲット取得
+      const target = document.querySelector("[mindar-image-target]");
 
-        target.addEventListener("targetFound", () => {
-          audio.play();
-        });
+      // ターゲット検出時に音再生
+      target.addEventListener("targetFound", () => {
+        console.log("ターゲット発見！音再生");
+        audio.play().catch(e => console.error("audio再生エラー:", e));
+      });
 
-        target.addEventListener("targetLost", () => {
-          audio.pause();
-          audio.currentTime = 0; // 再生位置リセットもおすすめ
-        });
-      })();
-    </script>
-  </body>
+      // ターゲット消失時に音停止＆リセット
+      target.addEventListener("targetLost", () => {
+        console.log("ターゲット消失。音停止");
+        audio.pause();
+        audio.currentTime = 0;
+      });
+    })();
+  </script>
+</body>
 </html>
