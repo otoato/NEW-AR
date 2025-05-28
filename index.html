@@ -1,19 +1,34 @@
-<!DOCTYPE html>
-<html>
+ <!DOCTYPE html>
+<html lang="ja">
   <head>
-    <title>MindAR 実験</title>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+    <meta charset="UTF-8">
+    <title>MindARテスト</title>
     <style>
-      body { margin: 0; overflow: hidden; }
-      canvas { display: block; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+      #ar-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
     </style>
   </head>
   <body>
-    <script>
+    <div id="ar-container"></div>
+
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+      import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.module.js';
+
       document.addEventListener("DOMContentLoaded", async () => {
-        const mindarThree = new window.MINDAR.IMAGE.MindARThree({
-          container: document.body,
+        const mindarThree = new MindARThree({
+          container: document.querySelector("#ar-container"),
           imageTargetSrc: "https://otoato.github.io/NEW-AR/mind/targets.mind"
         });
 
