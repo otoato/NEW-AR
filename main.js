@@ -36,8 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // ★★★ ここが重要な変更点 ★★★
-    // ボタンの代わりに、ローダー全体（画面）をクリックした時に一度だけ実行する
+    // ★★★ 画面全体をクリックした時に一度だけ実行する ★★★
     loader.addEventListener('click', startExperience, { once: true });
 
 
