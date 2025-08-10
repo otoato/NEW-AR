@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Otoato AR</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,7 +48,7 @@
 
         /* タイトル「Otoato」のスタイル */
         #loader h1 {
-            font-size: clamp(4rem, 20vw, 8rem); /* さらに大きく */
+            font-size: clamp(4rem, 20vw, 8rem); /* 画面サイズに応じて調整 */
             font-weight: 700;
             margin: 0;
             letter-spacing: 0.1em;
@@ -72,9 +75,9 @@
             to { opacity: 0.7; }
         }
 
-        /* ローディング中のアニメーション */
+        /* ローディング中のテキストのスタイル */
         #loader.is-loading p:after {
-            content: ''; /* 点滅はなしに */
+            content: ''; 
         }
     </style>
 </head>
